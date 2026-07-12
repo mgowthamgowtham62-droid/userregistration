@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Registration</title>
+</head>
+
+<body>
+
+<h2>User Registration</h2>
+
+<form id="form">
+
+Username
+
+<br>
+
+<input type="text" id="username">
+
+<br><br>
+
+Password
+
+<br>
+
+<input type="password" id="password">
+
+<br><br>
+
+<button type="submit">
+Register
+</button>
+
+</form>
+
+<p id="msg"></p>
+
+<script>
+
+document.getElementById("form").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+fetch("/users/register",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+username:document.getElementById("username").value,
+
+password:document.getElementById("password").value
+
+})
+
+})
+
+.then(response=>response.text())
+
+.then(data=>{
+
+document.getElementById("msg").innerHTML=data;
+
+});
+
+});
+
+</script>
+
+</body>
+
+</html>
