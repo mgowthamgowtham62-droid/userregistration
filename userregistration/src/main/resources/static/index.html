@@ -1,76 +1,539 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>User Registration</title>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #142433;
+    --ink-soft: #2c4356;
+    --parchment: #f6f2ea;
+    --panel: #ffffff;
+    --brass: #b8873f;
+    --brass-dark: #96692c;
+    --line: #dfd8c8;
+    --slate: #5b6b76;
+    --error: #b3432d;
+    --success: #3f7a54;
+    --radius: 3px;
+  }
 
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 920px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 2px rgba(20,36,51,0.04), 0 12px 32px rgba(20,36,51,0.08);
+  }
+
+  /* -------- Left: signature panel -------- */
+  .brand {
+    background: var(--ink);
+    background-image:
+      radial-gradient(circle at 20% 15%, rgba(184,135,63,0.16), transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(184,135,63,0.10), transparent 40%);
+    color: var(--parchment);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand::before {
+    content: "";
+    position: absolute;
+    inset: 14px;
+    border: 1px solid rgba(246,242,234,0.14);
+    pointer-events: none;
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-mark .glyph {
+    width: 30px; height: 30px;
+    flex-shrink: 0;
+  }
+
+  .brand-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+
+  .brand h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 18px 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .brand p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: rgba(246,242,234,0.72);
+    max-width: 30ch;
+    margin: 0;
+  }
+
+  .seal {
+    margin-top: 40px;
+  }
+
+  .seal-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: rgba(246,242,234,0.5);
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .seal-track {
+    height: 3px;
+    width: 100%;
+    background: rgba(246,242,234,0.14);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .seal-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--brass);
+    transition: width 0.35s ease, background 0.35s ease;
+  }
+
+  .seal-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(246,242,234,0.35);
+  }
+
+  .seal-labels span.active { color: var(--brass); }
+
+  /* -------- Right: form panel -------- */
+  .form-panel {
+    padding: 48px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .form-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass-dark);
+    margin: 0 0 8px;
+  }
+
+  .form-panel h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 26px;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+
+  .form-panel > p.sub {
+    font-size: 13.5px;
+    color: var(--slate);
+    margin: 0 0 30px;
+  }
+
+  .field {
+    margin-bottom: 20px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 7px;
+    letter-spacing: 0.01em;
+  }
+
+  .input-shell {
+    position: relative;
+  }
+
+  .field input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 14.5px;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    background: var(--parchment);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+
+  .field input::placeholder { color: #9aa7ae; }
+
+  .field input:hover { border-color: #c7bda3; }
+
+  .field input:focus {
+    border-color: var(--brass);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(184,135,63,0.15);
+  }
+
+  .field input:focus-visible {
+    outline: 2px solid var(--brass-dark);
+    outline-offset: 1px;
+  }
+
+  .field.has-error input {
+    border-color: var(--error);
+  }
+
+  .toggle-visibility {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--slate);
+    cursor: pointer;
+    padding: 4px 6px;
+    text-transform: uppercase;
+  }
+  .toggle-visibility:hover { color: var(--ink); }
+  .toggle-visibility:focus-visible { outline: 2px solid var(--brass-dark); outline-offset: 1px; }
+
+  .hint {
+    font-size: 12px;
+    color: var(--slate);
+    margin-top: 6px;
+    min-height: 15px;
+  }
+
+  .hint.error { color: var(--error); }
+
+  .strength-row {
+    display: flex;
+    gap: 4px;
+    margin-top: 9px;
+  }
+  .strength-row .bar {
+    height: 3px;
+    flex: 1;
+    background: var(--line);
+    border-radius: 2px;
+    transition: background 0.25s ease;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 13px 16px;
+    margin-top: 6px;
+    background: var(--ink);
+    color: var(--parchment);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.05s ease;
+  }
+
+  button[type="submit"]:hover { background: var(--ink-soft); }
+  button[type="submit"]:active { transform: translateY(1px); }
+  button[type="submit"]:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+  button[type="submit"]:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .fine-print {
+    font-size: 12px;
+    color: var(--slate);
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  #msg {
+    margin-top: 18px;
+    padding: 11px 14px;
+    font-size: 13.5px;
+    border-radius: var(--radius);
+    display: none;
+  }
+  #msg.show { display: block; }
+  #msg.success {
+    background: #eef5ef;
+    color: var(--success);
+    border: 1px solid #cfe4d3;
+  }
+  #msg.error {
+    background: #fbeeeb;
+    color: var(--error);
+    border: 1px solid #f0cfc6;
+  }
+
+  @media (max-width: 720px) {
+    .wrap { grid-template-columns: 1fr; }
+    .brand { padding: 36px 32px; }
+    .brand h1 { font-size: 27px; }
+    .form-panel { padding: 40px 32px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
 <body>
 
-<h2>User Registration</h2>
+<div class="wrap">
+  <div class="brand">
+    <div>
+      <div class="brand-mark">
+        <svg class="glyph" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.5" y="0.5" width="29" height="29" stroke="#B8873F" stroke-width="1"/>
+          <path d="M9 14V11.5C9 8.46 11.46 6 14.5 6C17.54 6 20 8.46 20 11.5V14" stroke="#F6F2EA" stroke-width="1.4" stroke-linecap="round"/>
+          <rect x="7" y="14" width="16" height="10.5" rx="1" fill="#B8873F"/>
+        </svg>
+        <span class="brand-eyebrow">Ledgerkeep Access</span>
+      </div>
+      <h1>Your record starts here.</h1>
+      <p>One account, kept in order. Fill in the two fields on the right and you're in — no forms to chase, no fine print to fear.</p>
+    </div>
 
-<form id="form">
+    <div class="seal">
+      <div class="seal-row">
+        <span id="strengthLabel">CREDENTIAL STRENGTH</span>
+      </div>
+      <div class="seal-track">
+        <div class="seal-fill" id="sealFill"></div>
+      </div>
+      <div class="seal-labels">
+        <span id="lbl-weak">Faint</span>
+        <span id="lbl-fair">Legible</span>
+        <span id="lbl-good">Sound</span>
+        <span id="lbl-strong">Sealed</span>
+      </div>
+    </div>
+  </div>
 
-Username
+  <div class="form-panel">
+    <p class="form-eyebrow">New account</p>
+    <h2>Register</h2>
+    <p class="sub">Takes about thirty seconds.</p>
 
-<br>
+    <form id="form" novalidate>
 
-<input type="text" id="username">
+      <div class="field" id="usernameField">
+        <label for="username">Username</label>
+        <div class="input-shell">
+          <input type="text" id="username" name="username" placeholder="e.g. j.harlow" autocomplete="username" required minlength="3">
+        </div>
+        <div class="hint" id="usernameHint"></div>
+      </div>
 
-<br><br>
+      <div class="field" id="passwordField">
+        <label for="password">Password</label>
+        <div class="input-shell">
+          <input type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password" required minlength="8">
+          <button type="button" class="toggle-visibility" id="toggleBtn">Show</button>
+        </div>
+        <div class="strength-row" aria-hidden="true">
+          <div class="bar" data-bar="1"></div>
+          <div class="bar" data-bar="2"></div>
+          <div class="bar" data-bar="3"></div>
+          <div class="bar" data-bar="4"></div>
+        </div>
+        <div class="hint" id="passwordHint">Use 8+ characters with a mix of letters, numbers and symbols.</div>
+      </div>
 
-Password
+      <button type="submit" id="submitBtn">Register</button>
+      <p class="fine-print">By continuing you agree this record is accurate.</p>
+    </form>
 
-<br>
-
-<input type="password" id="password">
-
-<br><br>
-
-<button type="submit">
-Register
-</button>
-
-</form>
-
-<p id="msg"></p>
+    <div id="msg" role="status"></div>
+  </div>
+</div>
 
 <script>
+(function () {
+  const form = document.getElementById("form");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+  const usernameHint = document.getElementById("usernameHint");
+  const passwordHint = document.getElementById("passwordHint");
+  const usernameField = document.getElementById("usernameField");
+  const passwordField = document.getElementById("passwordField");
+  const submitBtn = document.getElementById("submitBtn");
+  const msg = document.getElementById("msg");
+  const toggleBtn = document.getElementById("toggleBtn");
+  const sealFill = document.getElementById("sealFill");
+  const bars = document.querySelectorAll(".strength-row .bar");
+  const stepLabels = {
+    1: document.getElementById("lbl-weak"),
+    2: document.getElementById("lbl-fair"),
+    3: document.getElementById("lbl-good"),
+    4: document.getElementById("lbl-strong")
+  };
 
-document.getElementById("form").addEventListener("submit",function(e){
+  const barColors = ["#b3432d", "#c98a3a", "#8a9a3f", "#3f7a54"];
 
-e.preventDefault();
+  toggleBtn.addEventListener("click", function () {
+    const isPw = passwordInput.type === "password";
+    passwordInput.type = isPw ? "text" : "password";
+    toggleBtn.textContent = isPw ? "Hide" : "Show";
+  });
 
-fetch("/users/register",{
+  function scorePassword(value) {
+    let score = 0;
+    if (value.length >= 8) score++;
+    if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+    if (/\d/.test(value)) score++;
+    if (/[^A-Za-z0-9]/.test(value)) score++;
+    return Math.min(score, 4);
+  }
 
-method:"POST",
+  passwordInput.addEventListener("input", function () {
+    const val = passwordInput.value;
+    const score = val.length === 0 ? 0 : Math.max(1, scorePassword(val));
 
-headers:{
-"Content-Type":"application/json"
-},
+    bars.forEach((bar, i) => {
+      bar.style.background = i < score ? barColors[score - 1] : "";
+    });
 
-body:JSON.stringify({
+    const pct = val.length === 0 ? 0 : (score / 4) * 100;
+    sealFill.style.width = pct + "%";
+    sealFill.style.background = score > 0 ? barColors[score - 1] : "";
 
-username:document.getElementById("username").value,
+    Object.entries(stepLabels).forEach(([k, el]) => {
+      el.classList.toggle("active", Number(k) === score);
+    });
 
-password:document.getElementById("password").value
+    passwordField.classList.remove("has-error");
+    passwordHint.classList.remove("error");
+    passwordHint.textContent = val.length > 0 && val.length < 8
+      ? "Needs at least 8 characters."
+      : "Use 8+ characters with a mix of letters, numbers and symbols.";
+  });
 
-})
+  usernameInput.addEventListener("input", function () {
+    usernameField.classList.remove("has-error");
+    usernameHint.classList.remove("error");
+    usernameHint.textContent = "";
+  });
 
-})
+  function showMessage(text, type) {
+    msg.textContent = text;
+    msg.className = "show " + type;
+  }
 
-.then(response=>response.text())
+  function setFieldError(fieldEl, hintEl, text) {
+    fieldEl.classList.add("has-error");
+    hintEl.classList.add("error");
+    hintEl.textContent = text;
+  }
 
-.then(data=>{
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    msg.className = "";
 
-document.getElementById("msg").innerHTML=data;
+    let valid = true;
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
 
-});
+    if (username.length < 3) {
+      setFieldError(usernameField, usernameHint, "Username needs at least 3 characters.");
+      valid = false;
+    }
+    if (password.length < 8) {
+      setFieldError(passwordField, passwordHint, "Password needs at least 8 characters.");
+      valid = false;
+    }
+    if (!valid) return;
 
-});
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Registering…";
 
+    fetch("/users/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: username, password: password })
+    })
+      .then(function (response) {
+        return response.text().then(function (data) {
+          return { ok: response.ok, data: data };
+        });
+      })
+      .then(function (result) {
+        if (result.ok) {
+          showMessage(result.data || "Account created. Welcome aboard.", "success");
+          form.reset();
+          bars.forEach(bar => bar.style.background = "");
+          sealFill.style.width = "0%";
+        } else {
+          showMessage(result.data || "Something went wrong. Please try again.", "error");
+        }
+      })
+      .catch(function () {
+        showMessage("Couldn't reach the server. Check your connection and try again.", "error");
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Register";
+      });
+  });
+})();
 </script>
 
 </body>
-
 </html>
