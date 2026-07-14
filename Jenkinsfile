@@ -30,8 +30,8 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'gowthammuralidharan',
-                    usernameVariable: 'gowthammuralidharan',
-                    passwordVariable: 'Gowtham@8787'
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
                 )]) {
 
                     bat 'docker login -u %USER% -p %PASS%'
